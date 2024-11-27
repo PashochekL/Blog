@@ -1,0 +1,81 @@
+<div 
+    class="container-md mx-auto rounded col-md-9 mt-5"
+    style="background: #ffffff"
+    >
+
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary float-end" type="button" id="btnCreate" style="width: 140px;">Написать пост</button>
+    </div>
+
+    <form id="formMinePage" class="p-3 border">
+        <label>Фильтры</label>
+        <div class="row gap-3 mt-4">
+            <hr>
+            <div class="col">
+                <div class="row ps-2">
+                    <label for="searchByName" class="form-label ps-0">Поиск по имени автора</label>
+                    <input type="text" id="searchByName" class="form-control">
+                </div>
+                <div class="row mt-3">
+                    <div class="col-8 mt-5 p-0 ps-2">
+                        <label for="sort" class="form-label">Сортировать</label>
+                        <select class="form-select" id="inputSort" name="sort">
+                            <option value="createDesc">По дате создания (сначала новые)</option>
+                            <option value="createAsc">По дате создания (сначала старые)</option>
+                            <option value="likeDesc">Количество лайков (по убыванию)</option>
+                            <option value="likeAsc">Количество лайков (по возрастанию)</option>
+                        </select>
+                    </div>
+                    <div class="col-4 mt-5 p-0 ps-3">
+                        <label for="readingTimeFrom" class="form-label">Время чтения от</label>
+                        <input type="text" id="readingTimeFrom" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row p-0 pe-2">
+                    <label for="searchByTag" class="form-label ps-0">Поиск по тэгам</label>
+                    <div id="scrollContainer" class="form-control overflow-auto" style="max-height: 85px;">
+                        <div>Тег 1</div>
+                        <div>Тег 2</div>
+                        <div>Тег 3</div>
+                        <div>Тег 4</div>
+                        <div>Тег 5</div>
+                        <div>Тег 6</div>
+                    </div>
+                </div>
+                <div class="row gap-3">
+                    <div class="col mt-3 p-0">
+                        <label for="readingTimeTo" class="form-label">Время чтения до</label>
+                        <input type="text" id="readingTimeTo" class="form-control">
+                    </div>
+                    <div class="col mt-3 pt-4 p-0 px-2">
+                        <label for="readingTimeTo" class="form-label" style="width: 100px;">Мои группы</label>
+                    </div>
+                    <div class="col mt-3 pt-4 p-0 ps-4 pe-0">
+                        <button class="btn btn-primary" type="button" id="btnApply" style="width: 124px;">Применить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="postContainer">
+
+    </div>
+    <div class="col mt-3 mb-3">
+        <div class="row">
+            <label class="col-1">цифарки</label>
+            <label class="col-8 p-0"></label>
+            <div class="col-3 ps-4">
+                <div class="ps-1">Число постов на странице</div>
+                <select class="form-select" id="countPostOnPage" name="countPost" style="width: 206px;">
+                    <option value="1" id="countOne">1</option>
+                    <option value="2" id="countTwo">2</option>
+                    <option value="3" id="countThree">3</option>
+                    <option value="4" id="countFour">4</option>
+                    <option value="5" id="countFive">5</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

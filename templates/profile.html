@@ -1,0 +1,44 @@
+<div
+  class="p-3 border container-md mx-auto rounded col-md-10 mt-5"
+  style="background: #f5f5fa"
+>
+  <form id="formProfile">
+    <div class="row mb-3">
+        <label for="userEmail" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" id="inputEmail" name="email">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="userFullName" class="col-sm-2 col-form-label">ФИО</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputFullName" name="FullName">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="userPhone" class="col-sm-2 col-form-label">Номер телефона</label>
+        <div class="col-sm-10">
+            <input type="tel" class="form-control" id="inputPhone" name="phoneNumber">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="userGender" class="col-sm-2 col-form-label">Пол</label>
+        <div class="col-sm-10">
+            <select class="form-select" id="inputGender" name="gender">
+                <option value="Male">Мужской</option>
+                <option value="Female">Женский</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label for="userBirthday" class="col-sm-2 col-form-label">Дата рождения</label>
+        <div class="col-sm-10">
+            <input type="date" class="form-control" id="inputBirthday" name="birthDate"/>
+        </div>
+    </div>
+    <div class="row mb-2" style="justify-content: end;">
+        <div class="text-center mt-2" id="profileMessage"></div>
+        <button class="btn btn-primary me-2" type="button" id="btnSave" style="width: 100px;">Сохранить</button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,73 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.6/inputmask.min.js"></script>
+
+<div
+  class="container-md mx-auto border rounded col-md-4 mt-5 p-3"
+  style="background: #ffffff"
+>
+  <h3>Регистрация</h3>
+  <form id="formSignUp">
+    <div class="mb-3">
+        <label for="inputFullName" class="form-label">ФИО</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputFullName"
+          name="FullName"
+          placeholder="Иванов Иван Иванович"
+          required
+        />
+    </div>
+    <div class="mb-3">
+        <label for="inputBirthday" class="form-label">Дата рождения</label>
+        <input
+          type="date"
+          class="form-control"
+          id="inputBirthday"
+          name="birthDate"
+          required
+        />
+    </div>
+    <div class="mb-3">
+        <label for="inputGender" class="form-label">Пол</label>
+        <select class="form-select" id="inputGender" name="gender" required>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="inputPhone" class="form-label">Телефон</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="inputPhone"
+          name="phoneNumber"
+          placeholder="+7хххххххххх"
+        />
+    </div>
+    <div class="mb-3">
+        <label for="inputEmail" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="inputEmail"
+          name="email"
+          placeholder="name@example.com"
+          required
+        />
+      </div>
+    <div class="mb-3">
+      <label for="inputPassword" class="form-label">Password</label>
+      <input
+          type="password"
+          class="form-control"
+          id="inputPassword"
+          name="password"
+          required
+      />
+    </div>
+  </form>
+  <div class="text-center mt-2 mb-1" id="informMessage"></div>
+  <div class="d-grid gap-2">
+    <button class="btn btn-primary" type="button" id="btnSignUp">Зарегистрироваться</button>
+  </div>
+</div>
