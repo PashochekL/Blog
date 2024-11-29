@@ -5,10 +5,13 @@ export const navigate = (path) => {
 
 document.getElementById("logoutBtn").addEventListener("click", async (event) => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userEmail");
 
     document.getElementById("emailBtn").classList.add("d-none");
     document.getElementById("loginBtn").classList.remove("d-none");
-    document.getElementById("createPost").classList.add("d-none");
+    document.getElementById("authorsPage").classList.add("d-none");
+    document.getElementById("comunitiesPage").classList.add("d-none");
+
 
     window.history.replaceState({}, "/", "/");
     navigate("/");
@@ -40,7 +43,6 @@ const urlRoutes = {
     "/login": "/templates/login.html",
     "/registration": "/templates/registration.html",
     "/profile" : "/templates/profile.html",
-    "/create" : "/templates/createPost.html",
     "/authors" : "/templates/authors.html",
     "/comunities" : "/templates/comunities.html"
 }
@@ -54,6 +56,13 @@ const handleLocation = async () => {
     if ((!token || isTokenExpired(token)) && !publicRoutes.includes(path)) {
         console.warn("Токен отсутствует или истек");
         localStorage.removeItem("token");
+        localStorage.removeItem("userEmail");
+
+        document.getElementById("emailBtn").classList.add("d-none");
+        document.getElementById("loginBtn").classList.remove("d-none");
+        document.getElementById("authorsPage").classList.add("d-none");
+        document.getElementById("comunitiesPage").classList.add("d-none");
+
         path = "/login";
         window.history.replaceState({}, "Login", "/login");
     }
