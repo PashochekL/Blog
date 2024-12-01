@@ -1,5 +1,6 @@
 import { dateConversion } from "/js/createDateTime.js";
 import { showNotification } from "/js/noAuthorizeRep.js";
+import { navigate } from "/js/routing.js";
 
 let countPostPage = 5;
 let currentPage = 1;
@@ -21,7 +22,7 @@ const createURL = (state) => {
     }
     if (state.tags.length > 0) {
         state.tags.forEach(tag => {
-            params.append("tags", tag); // подумать как снова выделять тэги после обновления
+            params.append("tags", tag);
             selectedTags.push(tag);
         });
     }
@@ -39,11 +40,8 @@ const createURL = (state) => {
     }
     if (state.onlyMyCommunities === true) {
         params.set("onlyMyCommunities", "true");
-        document.getElementById("customCheck").checked = true; // уточнить при невыбранном пустом чекбоксе у моих групп стоит ли сразу выводить false или нет?
-    } else if (state.onlyMyCommunities === false) {
-        params.set("onlyMyCommunities", "false");
-        document.getElementById("customCheck").checked = false;
-    } //params.set("onlyMyCommunities", state.onlyMyCommunities ? "true" : "false"); //??????
+        document.getElementById("customCheck").checked = true;
+    }
     if (state.page) params.set("page", state.page);
     if (state.size) params.set("size", state.size);
 
@@ -57,6 +55,48 @@ const createURL = (state) => {
     const url = urlPath("https://blog.kreosoft.space/api/post", params);
   
     return url;
+};
+
+const addLikeOnPost = async (url) => {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(url,
+            {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+                }
+            }
+        );
+    
+        if (response.ok) {
+            console.log("УСПЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕХ, ДОБАВИЛ");
+        }
+    } catch (error) {
+        console.log("Error:", error);
+    }
+};
+
+const deleteLikeOnPost = async (url) => {
+    const token = localStorage.getItem("token");
+    try {
+        const response = await fetch(url,
+            {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+                }
+            }
+        );
+    
+        if (response.ok) {
+            console.log("УСПЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕХ, УДАЛИЛ");
+        }
+    } catch (error) {
+        console.log("Error:", error);
+    }
 };
 
 const getCurrentURL = () => {
@@ -88,14 +128,11 @@ const handleTagClick = (tagElement, tagId) => {
         selectedTags.push(tagId);
         tagElement.style.backgroundColor = "#007bff";
     }
-    console.log("Выбранные теги:", selectedTags);
 };
 
-const handleLikeClick = (postElement, data) => {
+const handleLikeClick = (heartImage, countLikes, data) => {
     const token = localStorage.getItem("token");
     if (token !== null) {
-        const heartImage = postElement.querySelector("#heartImg");
-        const countLikes = postElement.querySelector("#countLikesInput span");
         
         if (heartImage.classList.contains("bi-heart")) {
             heartImage.classList.remove("bi-heart");
@@ -103,12 +140,18 @@ const handleLikeClick = (postElement, data) => {
             heartImage.style.filter = "invert(42%) sepia(99%) saturate(6442%) hue-rotate(0deg) brightness(98%) contrast(102%)";
             countLikes.textContent = data.likes + 1;
             data.likes += 1;
+            const params = getCurrentURL();
+            const url = urlPath(`https://blog.kreosoft.space/api/post/${data.id}/like`, params);
+            addLikeOnPost(url);
         } else {
             heartImage.classList.remove("bi-heart-fill");
             heartImage.classList.add("bi-heart");
             heartImage.style.filter = "";
             countLikes.textContent = data.likes - 1;
             data.likes -= 1;
+            const params = getCurrentURL();
+            const url = urlPath(`https://blog.kreosoft.space/api/post/${data.id}/like`, params);
+            deleteLikeOnPost(url);
         }
     }
     else {
@@ -121,62 +164,37 @@ const handleChatClick = (data) => {
 }
 
 const createPost = async (post) => {
-    let postElement = document.createElement("div");
-    postElement.innerHTML = `
-        <form class="border-top border-start border-end mt-3">
-            <div class="row">
-                <div>
-                    <label class="form-label p-2 ps-3 pe-0 mt-2">${post.author}  -</label>
-                    <label class="form-label">${await dateConversion(post.createTime)} </label>
-                    <label class="form-label">в сообществе </label>
-                    <label class="form-label">"${post.communityName}"</label>
-                </div>
-                <div>
-                    <h4><label class="p-2 ps-3">${post.title}</label><h4><hr class="mx-3">
-                </div>
-                <div class="ms-3 pe-5 mt-1 mb-1">
-                    <label for="descriptions" class="form-label">${post.description}</label>
-                </div>
-                <div class="ms-3 mt-1">
-                    <div id="hashtagsContainer" class="hashtags-container" style="cursor: pointer;"></div>
-                </div>
-                <div class="ms-3 mt-1">
-                    <label for="readTime" class="form-label mt-1">Время чтения: ${post.readingTime} мин.</label>
-                </div>
-                <div>
-                    <div class="col border p-0" style="background: #f5f5f5; height: 30px;">
-                        <div class="row">
-                            <label class="col-1 ps-4">
-                                ${post.commentsCount}
-                                <i class="bi bi-chat-left-text" id="chatImg"></i>
-                            </label>
-                            <label class="col-10"></label>
-                            <label class="col-1 p-0">
-                                <div class="me-3 ps-4">
-                                    <i id="countLikesInput"><span style="font-size: 1.0rem;"">${post.likes}</span></i>
-                                    <i class="bi bi-heart" id="heartImg"></i>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    `;
+    const template = document.getElementById("post-template");
+    const postElement = template.content.cloneNode(true);
 
-    const heartImg = postElement.querySelector("#heartImg");
-    const chatImg = postElement.querySelector("#chatImg");
-    heartImg.addEventListener("click", () => handleLikeClick(postElement, post));
-    chatImg.addEventListener("click", () => handleChatClick(post));
+    postElement.querySelector(".author").textContent = post.author;
+    postElement.querySelector(".date").textContent = await dateConversion(post.createTime);
+    postElement.querySelector(".community-name").textContent = `${post.communityName}`;
+    postElement.querySelector(".title").textContent = post.title;
+    postElement.querySelector(".description").textContent = post.description;
+    postElement.querySelector(".reading-time").textContent = `Время чтения: ${post.readingTime} мин.`;
+    postElement.querySelector(".likes-count").textContent = post.likes;
+    postElement.querySelector(".comments-count").textContent = post.commentsCount;
 
-    if (post.hasLike) {
-        const heartImage = postElement.querySelector("#heartImg");
-        heartImage.classList.remove("bi-heart");
-        heartImage.classList.add("bi-heart-fill");
-        heartImage.style.filter = "invert(42%) sepia(99%) saturate(6442%) hue-rotate(0deg) brightness(98%) contrast(102%)";
+    const heartImg = postElement.querySelector(".heartImg");
+    const countLikes = postElement.querySelector("#countLikesInput");
+    if (heartImg) {
+        heartImg.addEventListener("click", () => handleLikeClick(heartImg, countLikes, post));
     }
 
-    const hashtagsContainer = postElement.querySelector("#hashtagsContainer");
+    const chatImg = postElement.querySelector("#chatImg");
+    if (chatImg) {
+        chatImg.addEventListener("click", () => handleChatClick(post));
+    }
+
+    if (post.hasLike && heartImg) {
+        heartImg.classList.remove("bi-heart");
+        heartImg.classList.add("bi-heart-fill");
+        heartImg.style.filter = "invert(42%) sepia(99%) saturate(6442%) hue-rotate(0deg) brightness(98%) contrast(102%)";
+    }
+
+
+    const hashtagsContainer = postElement.querySelector(".hashtags-container");
     if (post.tags && post.tags.length > 0) {
         post.tags.forEach((tags) => {
             let hashtagElement = document.createElement("a");
@@ -184,17 +202,20 @@ const createPost = async (post) => {
             hashtagElement.textContent = `#${tags.name}`;
             hashtagsContainer.appendChild(hashtagElement);
         });
-    } else {
-        //hashtagsContainer.textContent = "Нет хэштегов";
+    }
+
+    const nameForSearch = localStorage.getItem("searchToAuthorName");
+
+    if (nameForSearch) {
+        const inputname = document.getElementById("searchByName");
+        inputname.value = nameForSearch
+        localStorage.removeItem("searchToAuthorName");
     }
 
     return postElement;
 };
 
 const loadPosts = async (url) => {
-    console.log("fdhgjfdgjdfngjkfbnghjkf", countPostPage);
-    console.log("url:", url);
-
     const token = localStorage.getItem("token");
     try {
         const response = await fetch(url,
@@ -238,7 +259,6 @@ const updatePage = async (newPage) => {
     window.history.pushState({}, "", baseURL); 
 
     currentPage = newPage;
-    console.log(currentPage);
   
     const url = urlPath("https://blog.kreosoft.space/api/post", params);
 
@@ -248,7 +268,6 @@ const updatePage = async (newPage) => {
 const renderPagination = async () => {
     const paginationContainer = document.getElementById("paginationContainer");
     paginationContainer.innerHTML = "";
-    console.log("текущая страница внутри пагинации:", currentPage);
 
     const ul = document.createElement("ul");
     ul.classList.add("pagination", "pagination-sm");
@@ -364,15 +383,9 @@ const checkParams = async () => {
     const page = params.get("page");
     const size = params.get("size");
 
-
-    
-
-    //params.delete("tags");
-
     if (selectedTags && selectedTags.length > 0) {
         selectedTags.forEach(tag => {
             newParams.append("tags", tag);
-            //console.log("TEEEEEEEEEEEEEEEEEEEEEEEG", newParams.get("tags"))
         });
     }
 
@@ -397,13 +410,13 @@ document.getElementById("btnApply").addEventListener("click", checkParams);
 
 const loadPageContext = async () => {
     const token = localStorage.getItem("token");
+    
     if (token) {
         document.getElementById("emailBtn").classList.remove("d-none");
         document.getElementById("loginBtn").classList.add("d-none");
-        document.getElementById("authorsPage").classList.remove("d-none");
-        document.getElementById("comunitiesPage").classList.remove("d-none");
         document.getElementById("emailBtn").textContent = localStorage.getItem("userEmail");
         document.getElementById("btnCreate").classList.remove("d-none");
+        document.getElementById("btnCreate").addEventListener("click", () => navigate("/post/create"))
     }
     else {
         document.getElementById("btnCreate").classList.add("d-none");
@@ -447,7 +460,7 @@ const loadTags = async (token) => {
                 tagElement.className = "tag";
 
                 if (selectedTagsFromURL.includes(tag.id)) {
-                    tagElement.style.backgroundColor = "#007bff"; // цвет фона для выделенного тега
+                    tagElement.style.backgroundColor = "#007bff";
                 }
 
                 tagElement.addEventListener("click", () => handleTagClick(tagElement, tag.id));

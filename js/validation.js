@@ -1,4 +1,4 @@
-export const checkValidation = async (data) => {
+export const checkValidation = async (data, arayOfTags) => {
     var message = "";
     var validation = true;
 
@@ -39,6 +39,30 @@ export const checkValidation = async (data) => {
                 if (!value.trim()) {
                     validation = false;
                     message = "Поле ФИО не должно быть пустым";
+                }
+                break;
+            case "title":
+                if (!value.trim()) {
+                    validation = false;
+                    message = "Название - обязательное поле";
+                }
+                break;
+            case "readingTime":
+                if (!value.trim()) {
+                    validation = false;
+                    message = "Время чтения - обязательное поле";
+                }
+                break;
+            case "tags":
+                if (arayOfTags.length === 0) {
+                    validation = false;
+                    message = "Выберите хотя бы один тэг";
+                }
+                break;
+            case "description":
+                if (!value.trim()) {
+                    validation = false;
+                    message = "Текст - обязательное поле";
                 }
                 break;
         }

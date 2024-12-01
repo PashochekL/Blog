@@ -29,8 +29,6 @@ const getProfile = async () => {
 
             document.getElementById("emailBtn").classList.remove("d-none");
             document.getElementById("loginBtn").classList.add("d-none");
-            document.getElementById("authorsPage").classList.remove("d-none");
-            document.getElementById("comunitiesPage").classList.remove("d-none");
 
             document.getElementById("emailBtn").textContent  = profileData.email;
             localStorage.setItem("userEmail", profileData.email);

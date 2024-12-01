@@ -17,7 +17,7 @@ document.getElementById("logoutBtn").addEventListener("click", async (event) => 
     navigate("/");
 });
 
-const isTokenExpired = (token) => {
+export const isTokenExpired = (token) => {
     try {
         const payload = JSON.parse(atob(token.split(".")[1]));
         const currentTime = Math.floor(Date.now() / 1000);
@@ -44,7 +44,8 @@ const urlRoutes = {
     "/registration": "/templates/registration.html",
     "/profile" : "/templates/profile.html",
     "/authors" : "/templates/authors.html",
-    "/comunities" : "/templates/comunities.html"
+    "/comunities" : "/templates/comunities.html",
+    "/post/create": "/templates/create.html"
 }
 
 const handleLocation = async () => {
@@ -65,6 +66,8 @@ const handleLocation = async () => {
 
         path = "/login";
         window.history.replaceState({}, "Login", "/login");
+
+        navigate("/login");
     }
 
     let route = urlRoutes[404];
@@ -88,10 +91,6 @@ const handleLocation = async () => {
             break;
         }
     }
-
-    console.log("Current path:", path);
-    console.log("Route parameters:", params);
-    console.log(route);
 
     try {
         const html = await fetch(route).then((response) => response.text());
@@ -117,6 +116,12 @@ const loadScriptForPage = (path) => {
         scriptSrc = "/js/profile.js";
     } else if (path === "/") {
         scriptSrc = "/js/minePage.js";
+    } else if (path === "/authors") {
+        scriptSrc = "/js/authors.js";
+    } else if (path === "/comunities") {
+        scriptSrc = "/js/comunities.js";
+    } else if (path === "/post/create") {
+        scriptSrc = "/js/create.js";
     }
 
     if (scriptSrc) {

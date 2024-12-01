@@ -9,7 +9,7 @@ document.getElementById("btnSignUp").addEventListener("click", async (event) => 
 
     const data = Object.fromEntries(formData.entries());
 
-    const [message, validation] = await checkValidation(data);
+    const [message, validation] = await checkValidation(data, []);
 
     if(!validation) {
         infMessage.textContent = message;

@@ -1,1 +1,41 @@
-<h1>АВТОРЫ</h1>
+<div 
+    class="container-md mx-auto rounded col-lg-9 mt-2"
+    style="background: #ffffff"
+    >
+    <form id="authorsContainer"></form>
+</div>
+
+<template id="author-template">
+    <div class="row mt-4 border-bottom pb-3">
+        <div class="col-1 p-0">
+            <div class="row position-relative">
+                <img id="peopleImage" src="" alt="Иконка пола" class="img-fluid rounded-circle">
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="row">
+                <div class="d-flex">
+                    <h6 class="form-label me-1 pt-1 author-name" style="font-size: 1.1rem; cursor: pointer;"></h6>
+                    <label class="form-label me-1 pt-1 text-secondary" style="font-size: 1.0rem;">Создан:</label>
+                    <label class="form-label pt-1 text-secondary created-date"></label>
+                </div>
+                <div class="col">
+                    <div class="col mt-2">
+                        <label for="" class="form-label me-1 pt-1 text-secondary" style="font-size: 1.0rem;">Дата рождения: </label>
+                        <label for="" class="form-label pt-1 birth-date"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 mt-2 gap-3">
+            <div class="row d-flex">
+                <div class="col p-0">
+                    <label class="btn btn-primary p-0 px-2 " style="pointer-events: none">Постов: <span class="author-posts"></span></label>
+                </div>
+                <div class="col p-0">
+                    <label class="btn btn-primary p-0 px-2" style="pointer-events: none">Лайков: <span class="author-likes"></span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
