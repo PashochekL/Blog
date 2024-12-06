@@ -4,7 +4,7 @@ import { showNotification } from "/js/noAuthorizeRep.js";
 
 let selectedTags = [];
 
-const createPost = async () => {
+const createPost = async (url) => {
     const infMessage = document.getElementById("createPostMessage");
     const formData = new FormData(document.getElementById("createField"));
     infMessage.style.color = "red";
@@ -12,7 +12,8 @@ const createPost = async () => {
     const data = Object.fromEntries(formData.entries());
     console.log("selectedTags", selectedTags);
 
-    data.tags = selectedTags; 
+    data.tags = selectedTags;
+    console.log(data);
 
     const [message, validation] = await checkValidation(data, selectedTags);
 
@@ -35,8 +36,7 @@ const createPost = async () => {
     console.log("Sending data:", JSON.stringify(data));
     const token = localStorage.getItem("token");
     try {
-        const response = await fetch(
-            `https://blog.kreosoft.space/api/post`,
+        const response = await fetch(url,
             {
                 method: "POST",
                 headers: {
@@ -63,7 +63,85 @@ const createPost = async () => {
     }
 }
 
-document.getElementById("btnCreate").addEventListener("click", () => createPost());
+document.getElementById("btnCreate").addEventListener("click", () => {
+    const comId = localStorage.getItem("communityId");
+    console.log("comId:", comId);
+    if (comId) {
+        localStorage.removeItem("communityId");
+        console.log(1111);
+        createPost(`https://blog.kreosoft.space/api/community/${comId}/post`);
+    }
+    else {
+        createPost("https://blog.kreosoft.space/api/post");
+    }
+});
+
+const loadCity = async () => {
+    console.log("loadCity");
+    // try {
+    //     const response = await fetch(
+    //         // `https://blog.kreosoft.space/api/address/search/${}`,
+    //         // {
+    //         //     method: "GET",
+    //         //     headers: {
+    //         //       "Content-Type": "application/json"
+    //         //     }
+    //         // }
+    //     );
+
+    //     if (response.ok) {
+    //         const data = await response.json();
+    //         console.log(data);
+    //         // const scrollContainer = document.getElementById("chooseRegion");
+
+    //         // data.forEach(region => {
+    //         //     const regionElement = document.createElement("option");
+    //         //     regionElement.textContent = region.text;
+    //         //     regionElement.id = region.objectGuid;
+    //         //     regionElement.value = region.objectId;
+    //         //     regionElement.className = "region";
+    //         //     scrollContainer.appendChild(regionElement);
+    //         //   });
+
+    //     }
+    // } catch (error) {
+    //     console.log("Error:", error);
+    // }
+};
+
+const loadRegion = async () => {
+    try {
+        const response = await fetch(
+            `https://blog.kreosoft.space/api/address/search`,
+            {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json"
+                }
+            }
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            const scrollContainer = document.getElementById("chooseRegion");
+
+            data.forEach(region => {
+                const regionElement = document.createElement("option");
+                regionElement.textContent = region.text;
+                regionElement.id = region.objectGuid;
+                regionElement.value = region.objectId;
+                regionElement.className = "region";
+                scrollContainer.appendChild(regionElement);
+              });
+
+        }
+    } catch (error) {
+        console.log("Error:", error);
+    }
+};
+
+document.getElementById("chooseRegion").addEventListener("change", (event) => loadCity());
 
 const handleTagClick = (tagElement, tagId) => {
     if (selectedTags.includes(tagId)) {
@@ -75,7 +153,7 @@ const handleTagClick = (tagElement, tagId) => {
     }
 };
 
-const loadTags = async (token) => {
+const loadTags = async () => {
     try {
         const response = await fetch(
             `https://blog.kreosoft.space/api/tag`,
@@ -83,16 +161,17 @@ const loadTags = async (token) => {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
                 }
             }
         );
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
             const scrollContainer = document.getElementById("scrollContainer");
             scrollContainer.innerHTML = "";
+
+            const params = new URLSearchParams(window.location.search);
+            const selectedTagsFromURL = params.getAll("tags");
 
             data.forEach(tag => {
                 const tagElement = document.createElement("div");
@@ -100,10 +179,13 @@ const loadTags = async (token) => {
                 tagElement.id = tag.id;
                 tagElement.className = "tag";
 
+                if (selectedTagsFromURL.includes(tag.id)) {
+                    tagElement.style.backgroundColor = "#007bff";
+                }
+
                 tagElement.addEventListener("click", () => handleTagClick(tagElement, tag.id));
                 scrollContainer.appendChild(tagElement);
               });
-
         }
     } catch (error) {
         console.log("Error:", error);
@@ -118,7 +200,13 @@ const checkAutorize = () => {
         document.getElementById("loginBtn").classList.add("d-none");
         document.getElementById("emailBtn").textContent = localStorage.getItem("userEmail");
         loadTags(token);
-        // если перехожу на эту страницу со страницы группы, то надо поменять option на название группы в label=Группа
+        const communityName = localStorage.getItem("communityName");
+        if (communityName) {
+            const selectElement = document.getElementById("chooseComunity");
+            const option = selectElement.querySelector("option");
+            option.textContent = communityName;
+        }
+        loadRegion();
     }
     else {
         showNotification("Время действия на странице завершено", "danger")

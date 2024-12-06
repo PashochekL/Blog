@@ -1,14 +1,37 @@
 import { convertOnlyDate } from "/js/createDateTime.js";
 import { navigate } from "/js/routing.js";
 
-const createAuthor = async (author) => {
+const getTopRank = (author, topAuthors) => {
+    const index = topAuthors.findIndex(topAuthor => topAuthor.id === author.id);
+    return index !== -1 ? index + 1 : null;
+};
+
+const createAuthor = async (author, topRank) => {
     const template = document.getElementById("author-template");
     const authorElement = template.content.cloneNode(true);
 
-    const iconUrl = author.gender === "Male" ? "https://cdn-icons-png.flaticon.com/512/3884/3884851.png" 
-        : "https://cdn-icons-png.flaticon.com/512/4086/4086577.png";
+    let iconUrl;
+
+    if (topRank === 1) {
+        iconUrl = author.gender === "Male"
+            ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkrOzQ3CDkR9rTZD55HsS0U_SWkKac3_1IacGz-vvlEWdZOfGrBUkQiBhzI_L_pWoCgis&usqp=CAU"
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgpNYWAeHei0BqCT6AiL3z5G6ZqsUgx0jct5sAELwzSx3-OA8j1OhazFlHYwM7fdU1fM4&usqp=CAU";
+    } else if (topRank === 2) {
+        iconUrl = author.gender === "Male"
+            ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbWvXjx38atS8WvPMUwCJHJCJbpkxhh63GgZY7ZKCBoanAMT3imHsdH3xWR8XhgvEW3X8&usqp=CAU"
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0Ky2nRQYqz8ZqyC4dHm2eYu8NQUtIKSkfMPh3mXVJ9_mE6RDEI8a7Yy6_82J1nT-4UZA&usqp=CAU";
+    } else if (topRank === 3) {
+        iconUrl = author.gender === "Male"
+            ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJtPSRtvB8-AYfR64leSdFtooxUFJBxU1DocGOx1b0ONi5jPwae7U8qcGHI9eC3ibei6A&usqp=CAU"
+            : "https://cdn-icons-png.flaticon.com/512/1044/1044004.png";
+    } else {
+        iconUrl = author.gender === "Male"
+            ? "https://cdn-icons-png.flaticon.com/512/3884/3884851.png"
+            : "https://cdn-icons-png.flaticon.com/512/4086/4086577.png";
+    }
 
     authorElement.querySelector("#peopleImage").src = iconUrl;
+
     authorElement.querySelector(".author-name").textContent = author.fullName;
     authorElement.querySelector(".author-name").addEventListener("click", () => {
         console.log(author.fullName);
@@ -19,12 +42,11 @@ const createAuthor = async (author) => {
     authorElement.querySelector(".created-date").textContent = await convertOnlyDate(author.created);
     authorElement.querySelector(".birth-date").textContent = await convertOnlyDate(author.birthDate);
 
-    authorElement.querySelector(".author-posts").textContent = author.likes;
-    authorElement.querySelector(".author-likes").textContent = author.posts;
+    authorElement.querySelector(".author-posts").textContent = author.posts;
+    authorElement.querySelector(".author-likes").textContent = author.likes;
 
     return authorElement;
 };
-
 
 const loadAuthors = async () => {
     const token = localStorage.getItem("token");
@@ -39,16 +61,31 @@ const loadAuthors = async () => {
                 }
             }
         );
-    
+
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            console.log("Authors:", data);
+
+            data.forEach((author, index) => {
+                author.id = index + 1;
+            });
+
+            const sortedAuthors = data.sort((a, b) => {
+                if (b.posts === a.posts) {
+                    return b.likes - a.likes;
+                }
+                return b.posts - a.posts;
+            });
+
+            const topAuthors = sortedAuthors.slice(0, 3);
 
             let authorContainer = document.getElementById("authorsContainer");
             authorContainer.innerHTML = "";
-    
+
             for (let author of data) {
-                let authorElement = await createAuthor(author);
+                console.log("Top Authors IDs:", topAuthors.map(author => author.id));
+                const isTop = getTopRank(author, topAuthors);
+                let authorElement = await createAuthor(author, isTop);
                 authorContainer.appendChild(authorElement);
             }
         }
@@ -59,13 +96,13 @@ const loadAuthors = async () => {
 
 const checkAutorize = () => {
     const token = localStorage.getItem("token");
-    
+
     if (token) {
         document.getElementById("emailBtn").classList.remove("d-none");
         document.getElementById("loginBtn").classList.add("d-none");
         document.getElementById("emailBtn").textContent = localStorage.getItem("userEmail");
     }
     loadAuthors();
-}
+};
 
 checkAutorize();

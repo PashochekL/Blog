@@ -6,15 +6,15 @@ export const navigate = (path) => {
 document.getElementById("logoutBtn").addEventListener("click", async (event) => {
     localStorage.removeItem("token");
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("typeCommunity");
+    localStorage.removeItem("communityName");
+    localStorage.removeItem("communityId");
 
     document.getElementById("emailBtn").classList.add("d-none");
     document.getElementById("loginBtn").classList.remove("d-none");
-    document.getElementById("authorsPage").classList.add("d-none");
-    document.getElementById("comunitiesPage").classList.add("d-none");
-
 
     window.history.replaceState({}, "/", "/");
-    navigate("/");
+    navigate("/login");
 });
 
 export const isTokenExpired = (token) => {
@@ -44,25 +44,37 @@ const urlRoutes = {
     "/registration": "/templates/registration.html",
     "/profile" : "/templates/profile.html",
     "/authors" : "/templates/authors.html",
-    "/comunities" : "/templates/comunities.html",
-    "/post/create": "/templates/create.html"
+    "/communities" : "/templates/communities.html",
+    "/post/create": "/templates/create.html",
+    "/communities/:id": "/templates/communityDetails.html",
 }
+
+const publicRoutes = ["/login", "/registration", "/", "/authors", "/communities", "/communities/:id"];
+
+const isPublicRoute = (path) => {
+    return publicRoutes.some(route => {
+        if (route.includes(":")) {
+            const dynamicRouteRegex = new RegExp(
+                `^${route.replace(/:\w+/g, "([^/]+)")}$`
+            );
+            return dynamicRouteRegex.test(path);
+        }
+        return route === path;
+    });
+};
 
 const handleLocation = async () => {
     let token = localStorage.getItem("token");
     let path = window.location.pathname;
 
-    const publicRoutes = ["/login", "/registration", "/", "/authors", "/comunities"];
-
-    if ((!token || isTokenExpired(token)) && !publicRoutes.includes(path)) {
+    if ((!token || isTokenExpired(token)) && !isPublicRoute(path)) {
         console.warn("Токен отсутствует или истек");
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
+        localStorage.removeItem("typeCommunity");
 
         document.getElementById("emailBtn").classList.add("d-none");
         document.getElementById("loginBtn").classList.remove("d-none");
-        document.getElementById("authorsPage").classList.add("d-none");
-        document.getElementById("comunitiesPage").classList.add("d-none");
 
         path = "/login";
         window.history.replaceState({}, "Login", "/login");
@@ -118,10 +130,12 @@ const loadScriptForPage = (path) => {
         scriptSrc = "/js/minePage.js";
     } else if (path === "/authors") {
         scriptSrc = "/js/authors.js";
-    } else if (path === "/comunities") {
-        scriptSrc = "/js/comunities.js";
+    } else if (path === "/communities") {
+        scriptSrc = "/js/communities.js";
     } else if (path === "/post/create") {
         scriptSrc = "/js/create.js";
+    } else if (/^\/communities\/[a-f0-9\-]{36}$/.test(path)) {
+        scriptSrc = "/js/communityDetails.js";
     }
 
     if (scriptSrc) {

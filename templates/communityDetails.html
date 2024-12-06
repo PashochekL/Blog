@@ -2,53 +2,66 @@
     class="container-md mx-auto col-md-9 mt-3"
     style="background: #ffffff"
     >
-
-    <div class="d-flex justify-content-end mb-3">
-        <button class="btn btn-primary float-end d-none" type="button" id="btnCreate" style="width: 140px;">Написать пост</button>
-    </div>
-    <form id="formMinePage" class="border">
-        <div class="row px-3 pt-3 m-0" style="background: #f5f5f5; height: 50px;">Фильтры</div><hr class="m-0">
-        <div class="row gap-3 mt-4">
-            <div class="col p-3">
-                <div class="row ps-4">
-                    <label for="searchByName" class="form-label ps-0">Поиск по имени автора</label>
-                    <input type="text" id="searchByName" class="form-control">
+    <form id="formComunityPage" class="border">
+        <div class="col m-3">
+            <div class="row">
+                <div class="col-8">
+                    <div class="d-flex">
+                        <h3>
+                            Группа
+                            <label class="" id="comunityName"></label>
+                        </h3>
+                    </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-8 mt-5 p-0 ps-4">
-                        <label for="inputSort" class="form-label">Сортировать</label>
+                <div class="col-4 gap-3 d-flex justify-content-end">
+                    <button class="btn btn-primary d-none" type="button" id="btnCreate">Написать пост</button>
+                    <button class="btn btn-primary" type="button" id="btnSub">Подписаться</button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div>
+                    <i class="bi bi-people-fill"></i>
+                    <label id="countSub"></label>
+                    <label>подписчиков</label>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div>
+                    <label class="form-label">Тип сообщества:</label>
+                    <label class="form-label" id="typeComunity"> открытое</label>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <h5>Администраторы</h5>
+            </div>
+            <div class="row" id="AdminsContainer">
+
+            </div>
+        </div>
+    </form>
+    <form id="formComunityPage" class="border mt-3">
+        <div class="row px-3 pt-3 m-0" style="background: #f5f5f5; height: 50px;">Фильтры</div><hr class="m-0">
+        <div class="row mx-3 gap-4 my-3">
+            <div class="col">
+                <div class="row">
+                    <label for="inputSort" class="form-label ps-0">Сортировать</label>
                         <select class="form-select" id="inputSort" name="sort">
                             <option value="createDesc">По дате создания (сначала новые)</option>
                             <option value="createAsc">По дате создания (сначала старые)</option>
                             <option value="likeDesc">Количество лайков (по убыванию)</option>
                             <option value="likeAsc">Количество лайков (по возрастанию)</option>
                         </select>
-                    </div>
-                    <div class="col-4 mt-5 p-0 ps-3">
-                        <label for="readingTimeFrom" class="form-label">Время чтения от</label>
-                        <input type="text" id="readingTimeFrom" class="form-control">
-                    </div>
                 </div>
             </div>
-            <div class="col p-3">
-                <div class="row p-0 pe-4">
+            <div class="col">
+                <div class="row">
                     <label for="searchByTag" class="form-label ps-0">Поиск по тэгам</label>
                     <div id="scrollContainer" class="form-control overflow-auto" style="max-height: 85px; cursor: pointer;"></div>
                 </div>
-                <div class="row gap-3">
-                    <div class="col mt-3 p-0">
-                        <label for="readingTimeTo" class="form-label">Время чтения до</label>
-                        <input type="text" id="readingTimeTo" class="form-control">
-                    </div>
-                    <div class="col mt-4 pt-4 p-0 px-2">
-                        <input class="form-check-input" type="checkbox" value="" id="customCheck">
-                        <label for="myGroup" class="form-label" style="width: 100px;">Мои группы</label>
-                    </div>
-                    <div class="col mt-3 pt-4 p-0 ps-4 pe-4">
-                        <button class="btn btn-primary" type="button" id="btnApply" style="width: 124px;">Применить</button>
-                    </div>
-                </div>
             </div>
+        </div>
+        <div class="row mb-3 mt-3 mx-3 d-flex justify-content-end">
+            <button class="btn btn-primary" type="button" id="btnApply" style="width: 124px;">Применить</button>
         </div>
     </form>
     <div id="postContainer">
@@ -96,6 +109,23 @@
     </div>
 </div>
 
+<template id="admin-template">
+    <div class="row mt-2">
+        <div class="col-1 p-0">
+            <div class="row position-relative">
+                <img id="peopleImage" src="" class="img-fluid rounded-circle">
+            </div>
+        </div>
+        <div class="col-11">
+            <div class="row">
+                <div class="d-flex">
+                    <h6 class="form-label me-1 pt-1 admin-name" style="font-size: 1.1rem;"></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
 <template id="post-template">
     <form class="border-top border-start border-end mt-3">
         <div class="row">
@@ -106,7 +136,7 @@
                 <label class="form-label community-name"></label>
             </div>
             <div>
-                <h4><label class="p-2 ps-3 title" style="cursor: pointer;"></label></h4>
+                <h4><label class="p-2 ps-3 title"></label></h4>
                 <hr class="mx-3">
             </div>
             <div class="ms-3 pe-5 mt-1 mb-1">

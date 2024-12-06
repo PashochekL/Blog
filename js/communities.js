@@ -1,5 +1,6 @@
 import { showNotification } from "/js/noAuthorizeRep.js";
-import { isTokenExpired } from "/js/routing.js";
+import { loadComunityRole } from "/js/loadRole.js";
+import { navigate } from "/js/routing.js";
 
 const SubUnsub = async (id, token, path, endpoint) => {
     try {
@@ -15,50 +16,25 @@ const SubUnsub = async (id, token, path, endpoint) => {
         );
         if (response.ok) {
             console.log(`${path} УСПЕШНО`)
+            checkAutorize();
         }
     } catch (error) {
         console.log("Error:", error);
     }
 }
 
-const loadComunityRole = async (id) => {
-    const token = localStorage.getItem("token");
-
-    try {
-        const response = await fetch(
-            `https://blog.kreosoft.space/api/community/${id}/role`,
-            {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
-                }
-            }
-        );
-    
-        if (response.ok) {
-            const data = await response.json();
-            console.log("ROLE:", data);
-
-            return data;
-        }
-    } catch (error) {
-        console.log("Error:", error);
-    }
-};
-
-const handleButtonClick = async (comunityId, button) => {
+const handleButtonClick = async (communityId, button) => {
     const token = localStorage.getItem("token");
 
     if (token != null) {
         if (button.textContent == "Отписаться") {
-            await SubUnsub(comunityId, token, "unsubscribe", "DELETE");
+            await SubUnsub(communityId, token, "unsubscribe", "DELETE");
             button.textContent = "Подписаться";
             button.classList.remove("btn-danger");
             button.classList.add("btn-primary");
         }
         else {
-            await SubUnsub(comunityId, token, "subscribe", "POST");
+            await SubUnsub(communityId, token, "subscribe", "POST");
             button.textContent = "Отписаться";
             button.classList.add("btn-danger");
             button.classList.remove("btn-primary");
@@ -69,24 +45,21 @@ const handleButtonClick = async (comunityId, button) => {
     }
 };
 
-const createComunitiesField = async (comunity) => {
+const createComunitiesField = async (community) => {
     const template = document.getElementById("comunity-template");
     const comunityElement = template.content.cloneNode(true);
 
-    comunityElement.querySelector(".comunity-name").textContent = comunity.name;
-    comunityElement.querySelector(".author-name").addEventListener("click", () => {
-        console.log(comunity.name);
-        //navigate("/");
-    });
+    comunityElement.querySelector(".comunity-name").textContent = community.name;
+    comunityElement.querySelector(".comunity-name").addEventListener("click", () => navigate(`/communities/${community.id}`));
 
     const token = localStorage.getItem("token");
     const buttonSub = comunityElement.querySelector("#buttonSubId");
-    buttonSub.addEventListener("click", () => handleButtonClick(comunity.id, buttonSub));
+    buttonSub.addEventListener("click", () => handleButtonClick(community.id, buttonSub));
 
     let role = "";
 
-    if (token != null) {
-        role = await loadComunityRole(comunity.id);
+    if (token) {
+        role = await loadComunityRole(community.id, token);
     }
 
     if (role != "") {
@@ -121,12 +94,12 @@ const loadComunities = async () => {
         if (response.ok) {
             const data = await response.json();
 
-            let comunitiesContainer = document.getElementById("comunitiesContainer");
-            comunitiesContainer.innerHTML = "";
+            let communitiesContainer = document.getElementById("comunitiesContainer");
+            communitiesContainer.innerHTML = "";
     
-            for (let comunity of data) {
-                let comunitiesElement = await createComunitiesField(comunity);
-                comunitiesContainer.appendChild(comunitiesElement);
+            for (let community of data) {
+                let communitiesElement = await createComunitiesField(community);
+                communitiesContainer.appendChild(communitiesElement);
             }
         }
     } catch (error) {
@@ -137,7 +110,7 @@ const loadComunities = async () => {
 const checkAutorize = async () => {
     const token = localStorage.getItem("token");
     
-    if (token && !isTokenExpired(token)) {
+    if (token) {
         document.getElementById("emailBtn").classList.remove("d-none");
         document.getElementById("loginBtn").classList.add("d-none");
         document.getElementById("emailBtn").textContent = localStorage.getItem("userEmail");
