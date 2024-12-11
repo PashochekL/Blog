@@ -65,6 +65,12 @@ export const checkValidation = async (data, arayOfTags) => {
                     message = "Текст - обязательное поле";
                 }
                 break;
+            case "content":
+                if (!value.trim()) {
+                    validation = false;
+                    message = "Поле комментария не может быть пустым";
+                }
+                break;
         }
     }
     return [message, validation];

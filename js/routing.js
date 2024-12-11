@@ -47,9 +47,10 @@ const urlRoutes = {
     "/communities" : "/templates/communities.html",
     "/post/create": "/templates/create.html",
     "/communities/:id": "/templates/communityDetails.html",
+    "/post/:id": "/templates/postDetails.html"
 }
 
-const publicRoutes = ["/login", "/registration", "/", "/authors", "/communities", "/communities/:id"];
+const publicRoutes = ["/login", "/registration", "/", "/authors", "/communities", "/communities/:id", "/post/:id"];
 
 const isPublicRoute = (path) => {
     return publicRoutes.some(route => {
@@ -72,14 +73,18 @@ const handleLocation = async () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
         localStorage.removeItem("typeCommunity");
+        localStorage.removeItem("communityName");
+        localStorage.removeItem("communityId");
 
         document.getElementById("emailBtn").classList.add("d-none");
         document.getElementById("loginBtn").classList.remove("d-none");
 
         path = "/login";
         window.history.replaceState({}, "Login", "/login");
-
-        navigate("/login");
+        navigate(path);
+    }
+    if (path != "/post/create") {
+        localStorage.removeItem("communityName");
     }
 
     let route = urlRoutes[404];
@@ -136,6 +141,8 @@ const loadScriptForPage = (path) => {
         scriptSrc = "/js/create.js";
     } else if (/^\/communities\/[a-f0-9\-]{36}$/.test(path)) {
         scriptSrc = "/js/communityDetails.js";
+    } else if (/^\/post\/[a-f0-9\-]{36}$/.test(path)) {
+        scriptSrc = "/js/postDetails.js";
     }
 
     if (scriptSrc) {
@@ -153,4 +160,3 @@ const loadScriptForPage = (path) => {
 window.onpopstate = handleLocation;
 
 handleLocation();
-

@@ -1,0 +1,101 @@
+<div 
+    class="container-md mx-auto rounded col-lg-9 mt-3"
+    style="background: #ffffff"
+    >
+    <form id="postContainer" class="border-top border-start border-end">
+        <div class="row">
+            <div>
+                <label class="form-label p-2 ps-3 pe-0 mt-2 author"></label>
+                <label class="form-label date"></label>
+                <label class="form-label"></label>
+                <label class="form-label community-name"></label>
+            </div>
+            <div>
+                <h4><label class="p-1 mb-2 ps-3 title"></label></h4>
+                <hr class="mx-3 mt-2">
+            </div>
+            <div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <img id="image" src="" class="form-label image"></img>
+                </div>
+            </div>
+            <div>
+                <div class="ms-3 pe-3 mb-1">
+                    <label for="descriptions" class="form-label description"></label>
+                </div>
+            </div>
+            <div class="mx-3 mt-1">
+                <div class="pe-1">
+                    <div class="hashtags-container pe-4" id="hashtags-container"></div>
+                </div>
+            </div>
+            <div class="mx-3 mt-1 pe-4">
+                <div class="pe-3">
+                    <label for="readTime" class="form-label mt-1 reading-time"></label>
+                </div>
+            </div>
+            <div class="mx-3 pe-4">
+                <div class="pe-3">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    <i class="ms-1 create-location" style="font-style: normal; text-decoration: none;"></i>
+                </div>
+            </div>
+            <div class="mt-2">
+                <div class="col border p-0" style="background: #f5f5f5; height: 30px;">
+                    <div class="row">
+                        <div class="col ms-3 ps-2">
+                            <i class="comments-count ms-1"></i>
+                            <i class="bi bi-chat-left-text" id="chatImg"></i>
+                        </div>
+                        <div class="col"></div>
+                        <div class="col">
+                            <div class="d-flex justify-content-end me-2">
+                                <i id="countLikesInput"><span style="font-size: 1.0rem;" class="likes-count"></span></i>
+                                <i class="bi bi-heart heartImg mx-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <form class="border mt-2">
+        <div class="row">
+            <div class="">
+                <h5 class="p-3 mb-0">Комментарии</h5>
+            </div>
+            <div id="commentContainer">
+
+            </div>
+        </div>
+    </form>
+    <form id="createComment" class="border mt-3">
+        <div class="row">
+            <div class="col px-4">
+                <label class="py-3">Оставте комментарий</label>
+                <textarea class="form-control" id="commentDescription" rows="4" name="content" required></textarea>
+            </div>
+            <div class="row mt-3 mb-3">
+                <div class="col-4"></div>
+                <div class="col-4">
+                    <div class="text-center mt-2 d-none" id="createCommentMessage"></div>
+                </div>
+                <div class="col-4 text-end px-0">
+                    <button class="btn btn-primary" type="button" id="btnCreate">Отправить</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<template id="comment-template">
+    <div class="row mb-1">
+        <label class="mx-3 form-label author mb-0">Author</label>
+        <h5 class="mx-3 pe-5 mt-2 form-label title" style="font-weight: normal;">CONTENT</h5>
+        <div class="ms-3">
+            <label class="form-label date">createDate</label>
+            <a class="text-primary text-decoration-none" style="cursor: pointer;">Ответить</a>
+        </div>
+        <a class="d-none mx-3 mt-2 text-primary text-decoration-none form-label answer" style="cursor: pointer;">Расскрыть ответы</a>
+    </div>
+</template>

@@ -5,9 +5,7 @@ export const showNotification = (message, type = "danger") => {
     
     notification.innerHTML = `
         <div class="d-flex align-items-center">
-            <div>
-                <strong>Внимание!</strong> ${message}
-            </div>
+            <div>${message}</div>
         </div>
     `;
 

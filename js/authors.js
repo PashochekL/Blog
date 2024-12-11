@@ -64,30 +64,34 @@ const loadAuthors = async () => {
 
         if (response.ok) {
             const data = await response.json();
-            console.log("Authors:", data);
 
             data.forEach((author, index) => {
                 author.id = index + 1;
             });
 
-            const sortedAuthors = data.sort((a, b) => {
+            const topAuthors = [...data]
+            .sort((a, b) => {
                 if (b.posts === a.posts) {
                     return b.likes - a.likes;
                 }
                 return b.posts - a.posts;
-            });
-
-            const topAuthors = sortedAuthors.slice(0, 3);
+            })
+            .slice(0, 3);
+        
+            const sortedAuthors = [...data].sort((a, b) => a.fullName.localeCompare(b.fullName));
 
             let authorContainer = document.getElementById("authorsContainer");
             authorContainer.innerHTML = "";
 
-            for (let author of data) {
-                console.log("Top Authors IDs:", topAuthors.map(author => author.id));
+            for (let author of sortedAuthors) {
                 const isTop = getTopRank(author, topAuthors);
                 let authorElement = await createAuthor(author, isTop);
                 authorContainer.appendChild(authorElement);
             }
+            
+            data.sort((a, b) => {
+                return a.fullName.localeCompare(b.fullName);
+            });
         }
     } catch (error) {
         console.log("Error:", error);

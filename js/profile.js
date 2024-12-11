@@ -2,9 +2,9 @@ import { navigate } from "/js/routing.js";
 import { checkValidation } from "/js/validation.js";
 
 const getProfile = async () => {
+    const token = localStorage.getItem("token");
+    
     try {
-        const token = localStorage.getItem("token");
-
         const response = await fetch(
             "https://blog.kreosoft.space/api/account/profile",
             {
@@ -52,16 +52,16 @@ document.getElementById("btnSave").addEventListener("click", async (event) => {
     const infMessage = document.getElementById("profileMessage");
     infMessage.style.color = "red";
 
-    const [message, validation] = await checkValidation(data);
+    const [message, validation] = await checkValidation(data, []);
 
     if(!validation) {
         infMessage.textContent = message;
         return;
     }
 
-    try {
-        const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
+    try {
         const response = await fetch(
             "https://blog.kreosoft.space/api/account/profile",
             {

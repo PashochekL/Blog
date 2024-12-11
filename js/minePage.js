@@ -54,7 +54,7 @@ const createURL = (state) => {
     return url;
 };
 
-const likeOnPost = async (url, requestMethod) => {
+const likeOnPost = async (url, requestMethod, data, heartImage) => {
     const token = localStorage.getItem("token");
     try {
         const response = await fetch(url,
@@ -68,6 +68,20 @@ const likeOnPost = async (url, requestMethod) => {
         );
     
         if (response.ok) {
+            const countLikes = document.getElementById(`${data.id}`);
+            if (requestMethod == "POST") {
+                heartImage.classList.remove("bi-heart");
+                heartImage.classList.add("bi-heart-fill");
+                heartImage.style.filter = "invert(42%) sepia(99%) saturate(6442%) hue-rotate(0deg) brightness(98%) contrast(102%)";
+                countLikes.textContent = data.likes + 1;
+                data.likes += 1;
+            } else {
+                heartImage.classList.remove("bi-heart-fill");
+                heartImage.classList.add("bi-heart");
+                heartImage.style.filter = "";
+                countLikes.textContent = data.likes - 1;
+                data.likes -= 1;
+            }
             console.log("УСПЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕХ");
         }
     } catch (error) {
@@ -102,31 +116,20 @@ const handleTagClick = (tagElement, tagId) => {
     }
 };
 
-const handleLikeClick = (heartImage, countLikes, data) => {
-    const token = localStorage.getItem("token");
-    if (token !== null) {
-        
-        if (heartImage.classList.contains("bi-heart")) {
-            heartImage.classList.remove("bi-heart");
-            heartImage.classList.add("bi-heart-fill");
-            heartImage.style.filter = "invert(42%) sepia(99%) saturate(6442%) hue-rotate(0deg) brightness(98%) contrast(102%)";
-            countLikes.textContent = data.likes + 1;
-            data.likes += 1;
-            const params = new URLSearchParams(window.location.search);
-            const url = urlPath(`https://blog.kreosoft.space/api/post/${data.id}/like`, params);
-            likeOnPost(url, "POST");
-        } else {
-            heartImage.classList.remove("bi-heart-fill");
-            heartImage.classList.add("bi-heart");
-            heartImage.style.filter = "";
-            countLikes.textContent = data.likes - 1;
-            data.likes -= 1;
-            const params = new URLSearchParams(window.location.search);
-            const url = urlPath(`https://blog.kreosoft.space/api/post/${data.id}/like`, params);
-            likeOnPost(url, "DELETE");
-        }
+const titleClick = (post) => {
+    localStorage.setItem("postId", post.id);
+    navigate(`/post/${post.id}`)
+};
+
+const handleLikeClick = (heartImage, data) => {
+    if (heartImage.classList.contains("bi-heart")) {
+        const params = new URLSearchParams(window.location.search);
+        const url = urlPath(`https://blog.kreosoft.space/api/post/${data.id}/like`, params);
+        likeOnPost(url, "POST", data, heartImage);
     } else {
-        showNotification("Вы не авторизованы", "danger");
+        const params = new URLSearchParams(window.location.search);
+        const url = urlPath(`https://blog.kreosoft.space/api/post/${data.id}/like`, params);
+        likeOnPost(url, "DELETE", data, heartImage);
     }
 }
 
@@ -140,17 +143,21 @@ const createPost = async (post) => {
 
     postElement.querySelector(".author").textContent = post.author;
     postElement.querySelector(".date").textContent = await dateConversion(post.createTime);
-    postElement.querySelector(".community-name").textContent = `${post.communityName}`;
     postElement.querySelector(".title").textContent = post.title;
+    postElement.querySelector(".title").addEventListener("click", () => titleClick(post))
     postElement.querySelector(".description").textContent = post.description;
     postElement.querySelector(".reading-time").textContent = `Время чтения: ${post.readingTime} мин.`;
     postElement.querySelector(".likes-count").textContent = post.likes;
+    postElement.querySelector(".likes-count").id = post.id;
     postElement.querySelector(".comments-count").textContent = post.commentsCount;
 
+    if (post.communityName) {
+        postElement.querySelector(".community-name").textContent = `в сообществе "${post.communityName}"`;
+    }
+
     const heartImg = postElement.querySelector(".heartImg");
-    const countLikes = postElement.querySelector("#countLikesInput");
     if (heartImg) {
-        heartImg.addEventListener("click", () => handleLikeClick(heartImg, countLikes, post));
+        heartImg.addEventListener("click", () => handleLikeClick(heartImg, post));
     }
 
     const chatImg = postElement.querySelector("#chatImg");

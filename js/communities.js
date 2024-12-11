@@ -16,7 +16,6 @@ const SubUnsub = async (id, token, path, endpoint) => {
         );
         if (response.ok) {
             console.log(`${path} УСПЕШНО`)
-            checkAutorize();
         }
     } catch (error) {
         console.log("Error:", error);
