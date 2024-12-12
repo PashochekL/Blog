@@ -153,11 +153,40 @@ const createPost = async (post) => {
     postElement.querySelector(".date").textContent = await dateConversion(post.createTime);
     postElement.querySelector(".title").textContent = post.title;
     postElement.querySelector(".title").addEventListener("click", () => titleClick(post))
-    postElement.querySelector(".description").textContent = post.description;
+    const description = postElement.querySelector('.description');
+    description.textContent = post.description;
     postElement.querySelector(".reading-time").textContent = `Время чтения: ${post.readingTime} мин.`;
     postElement.querySelector(".likes-count").textContent = post.likes;
     postElement.querySelector(".likes-count").id = post.id;
     postElement.querySelector(".comments-count").textContent = post.commentsCount;
+    postElement.querySelector(`.toggleButton`).id = `toggleButton-${post.id}`;
+
+    const toggleButton = postElement.querySelector(`#toggleButton-${post.id}`);
+    const computedStyle = window.getComputedStyle(description);
+    const descriptionHeight = parseFloat(computedStyle.height);
+
+    if (descriptionHeight > 50) {
+        toggleButton.classList.remove("d-none");
+    } else {
+        description.style.height = "auto";
+    }
+
+    toggleButton.addEventListener("click", function() {
+        if (description.style.maxHeight === "50px") {
+            description.style.maxHeight = "1000px";
+            description.style.height = "auto";
+            toggleButton.textContent = "Скрыть текст";
+        } else {
+            description.style.maxHeight = "50px";
+            toggleButton.textContent = "Читать полностью";
+        }
+    });
+
+    if (post.image) {
+        postElement.querySelector("#image").src = post.image;
+    } else {
+        postElement.querySelector("#image").classList.add("d-none");
+    }
 
     if (post.communityName) {
         postElement.querySelector(".community-name").textContent = `в сообществе "${post.communityName}"`;
@@ -184,7 +213,7 @@ const createPost = async (post) => {
     if (post.tags && post.tags.length > 0) {
         post.tags.forEach((tags) => {
             let hashtagElement = document.createElement("a");
-            hashtagElement.className = "text me-1 pe-3 text-decoration-none";
+            hashtagElement.className = "text me-1 pe-3 text-secondary text-decoration-none";
             hashtagElement.textContent = `#${tags.name}`;
             hashtagsContainer.appendChild(hashtagElement);
         });

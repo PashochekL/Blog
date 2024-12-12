@@ -34,12 +34,6 @@ const SubUnsub = async (id, token, path, endpoint) => {
                     countSub.textContent = data.subscribersCount;
 
                     navigate(`/communities/${id}`);
-                    // if (path == "unsubscribe") {
-                    //     getInfCommunity(id, null);
-                    // } else if ("subscribe") {
-                    //     getInfCommunity(id, "Subscriber");
-                    // }
-                    // //getInfCommunity();
                 }
             } catch (error) {
                 console.log("Error:", error);
