@@ -9,6 +9,10 @@ document.getElementById("btnSignUp").addEventListener("click", async (event) => 
 
     const data = Object.fromEntries(formData.entries());
 
+    if (!data.phoneNumber) {
+        delete data.phoneNumber;
+    }
+
     const [message, validation] = await checkValidation(data, []);
 
     if(!validation) {

@@ -5,16 +5,20 @@ export const checkValidation = async (data, arayOfTags) => {
     for (let [key, value] of Object.entries(data)) {
         switch (key) {
             case "birthDate":
-                var bday = new Date(value);
-                var now = new Date();
-                var minDate = new Date('1900-01-01');
-                if (bday > now) {
+                if (!value) {
                     validation = false;
-                    message = "Дата рождения не может превышать текущую дату";
-                }
-                else if (bday < minDate) {
-                    validation = false;
-                    message = "Дата рождения не может быть раньше 01.01.1900";
+                    message = "Выберите дату рождения";
+                } else {
+                    var bday = new Date(value);
+                    var now = new Date();
+                    var minDate = new Date('1900-01-01');
+                    if (bday > now) {
+                        validation = false;
+                        message = "Дата рождения не может превышать текущую дату";
+                    } else if (bday < minDate) {
+                        validation = false;
+                        message = "Дата рождения не может быть раньше 01.01.1900";
+                    }
                 }
                 break;
             case "phoneNumber":
@@ -24,15 +28,15 @@ export const checkValidation = async (data, arayOfTags) => {
                 }
                 break;
             case "email":
-                if (!value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                if (!value.match(/^[a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*@[a-zA-Z]+\.[a-zA-Z]{2,}$/)) {
                     validation = false;
                     message = "Неверный формат email";
                 }
                 break;
             case "password":
-                if (!value.match(/^.{6,}$/)) {
+                if (!value.match(/^.{6,}$/) || !value.match(/\d/)) {
                     validation = false;
-                    message = "Минимальная длина пароля - 6 символов";
+                    message = "Минимальная длина пароля - 6 символов. Пароль должен иметь цифры";
                 }
                 break;
             case "FullName":
