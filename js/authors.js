@@ -39,7 +39,8 @@ const createAuthor = async (author, topRank) => {
         navigate("/");
     });
 
-    authorElement.querySelector(".created-date").textContent = await convertOnlyDate(author.created);
+    const finishDate = await convertOnlyDate(author.created);
+    authorElement.querySelector(".created-date").textContent = `Создан: ${finishDate}`;
     authorElement.querySelector(".birth-date").textContent = await convertOnlyDate(author.birthDate);
 
     authorElement.querySelector(".author-posts").textContent = author.posts;
