@@ -190,17 +190,15 @@ document.getElementById("chooseStreet").addEventListener("change", async () => {
     const scrollContainer = document.getElementById("chooseStreet");
     const scrollBuilding = document.getElementById("chooseBuilding");
     const selectedStreet = scrollContainer.options[scrollContainer.selectedIndex];
-    streetElement.querySelector("label").textContent = selectedStreet.className;
-    if (!streetElement.querySelector("label").textContent) {
-        streetElement.querySelector("label").textContent = "Следующий элемент адреса";
-    }
+    streetElement.querySelector("label").textContent = selectedStreet.className || "Следующий элемент адреса";
     if (selectedStreet.id) {
-        const buildingElement  = document.getElementById("building");
+        const buildingElement = document.getElementById("building");
         buildingElement.querySelector("label").textContent = "Следующий элемент адреса";
 
         while (scrollBuilding.firstChild) {
             scrollBuilding.removeChild(scrollBuilding.firstChild);
         }
+
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
         defaultOption.textContent = "Не выбран";
@@ -208,17 +206,16 @@ document.getElementById("chooseStreet").addEventListener("change", async () => {
 
         await loadHouse(selectedStreet.id);
     } else {
-        const streetElement  = document.getElementById("city");
-        streetElement.querySelector("label").textContent = "Следующий элемент адреса";
-        
         while (scrollBuilding.firstChild) {
             scrollBuilding.removeChild(scrollBuilding.firstChild);
         }
+
         const defaultOption = document.createElement("option");
         defaultOption.value = "";
         defaultOption.textContent = "Не выбран";
         scrollBuilding.appendChild(defaultOption);
-        document.getElementById("city").classList.add('d-none');
+
+        document.getElementById("building").classList.add('d-none');
     }
 });
 
@@ -262,6 +259,7 @@ document.getElementById("chooseCity").addEventListener("change", async () => {
     const cityElement  = document.getElementById("city");
     const scrollContainer = document.getElementById("chooseCity");
     const scrollStreet = document.getElementById("chooseStreet");
+    const scrollBuilding = document.getElementById("chooseBuilding");
     const selectedCity = scrollContainer.options[scrollContainer.selectedIndex];
     cityElement.querySelector("label").textContent = selectedCity.className;
     if (!cityElement.querySelector("label").textContent) {
@@ -273,10 +271,21 @@ document.getElementById("chooseCity").addEventListener("change", async () => {
         while (scrollStreet.firstChild) {
             scrollStreet.removeChild(scrollStreet.firstChild);
         }
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Не выбран";
-        scrollStreet.appendChild(defaultOption);
+        while (scrollBuilding.firstChild) {
+            scrollBuilding.removeChild(scrollBuilding.firstChild);
+        }
+
+        const defaultStreetOption = document.createElement("option");
+        defaultStreetOption.value = "";
+        defaultStreetOption.textContent = "Не выбран";
+        scrollStreet.appendChild(defaultStreetOption);
+
+        const defaultBuildingOption = document.createElement("option");
+        defaultBuildingOption.value = "";
+        defaultBuildingOption.textContent = "Не выбран";
+        scrollBuilding.appendChild(defaultBuildingOption);
+        document.getElementById("building").classList.add('d-none');
+
         await loadStreet(selectedCity.id);
     } else {
         const streetElement  = document.getElementById("street");
@@ -285,11 +294,22 @@ document.getElementById("chooseCity").addEventListener("change", async () => {
         while (scrollStreet.firstChild) {
             scrollStreet.removeChild(scrollStreet.firstChild);
         }
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Не выбран";
-        scrollStreet.appendChild(defaultOption);
+        while (scrollBuilding.firstChild) {
+            scrollBuilding.removeChild(scrollBuilding.firstChild);
+        }
+
+        const defaultStreetOption = document.createElement("option");
+        defaultStreetOption.value = "";
+        defaultStreetOption.textContent = "Не выбран";
+        scrollStreet.appendChild(defaultStreetOption);
+
+        const defaultBuildingOption = document.createElement("option");
+        defaultBuildingOption.value = "";
+        defaultBuildingOption.textContent = "Не выбран";
+        scrollBuilding.appendChild(defaultBuildingOption);
+
         document.getElementById("street").classList.add('d-none');
+        document.getElementById("building").classList.add('d-none');
     }
 });
 
@@ -328,6 +348,8 @@ const loadRegion = async () => {
 document.getElementById("chooseRegion").addEventListener("change", async () => {
     const scrollContainer = document.getElementById("chooseRegion");
     const scrollCity = document.getElementById("chooseCity");
+    const scrollStreet = document.getElementById("chooseStreet");
+    const scrollBuilding = document.getElementById("chooseBuilding");
     const selectedRegion = scrollContainer.options[scrollContainer.selectedIndex];
     if (selectedRegion.id) {
         await loadCity(selectedRegion.id);
@@ -338,10 +360,29 @@ document.getElementById("chooseRegion").addEventListener("change", async () => {
         while (scrollCity.firstChild) {
             scrollCity.removeChild(scrollCity.firstChild);
         }
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Не выбран";
-        scrollCity.appendChild(defaultOption);
+        while (scrollStreet.firstChild) {
+            scrollStreet.removeChild(scrollStreet.firstChild);
+        }
+        while (scrollBuilding.firstChild) {
+            scrollBuilding.removeChild(scrollBuilding.firstChild);
+        }
+        const defaultCityOption = document.createElement("option");
+        defaultCityOption.value = "";
+        defaultCityOption.textContent = "Не выбран";
+        scrollCity.appendChild(defaultCityOption);
+
+        const defaultStreetOption = document.createElement("option");
+        defaultStreetOption.value = "";
+        defaultStreetOption.textContent = "Не выбран";
+        scrollStreet.appendChild(defaultStreetOption);
+
+        const defaultBuildingOption = document.createElement("option");
+        defaultBuildingOption.value = "";
+        defaultBuildingOption.textContent = "Не выбран";
+        scrollBuilding.appendChild(defaultBuildingOption);
+        
+        document.getElementById("street").classList.add('d-none');
+        document.getElementById("building").classList.add('d-none');
         document.getElementById("city").classList.add('d-none');
     }
 });

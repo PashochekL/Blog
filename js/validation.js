@@ -49,12 +49,18 @@ export const checkValidation = async (data, arayOfTags) => {
                 if (!value.trim()) {
                     validation = false;
                     message = "Название - обязательное поле";
+                } else if (value.trim().length < 5) {
+                    validation = false;
+                    message = "Минимальная длина заголовка - 5 символов";
                 }
                 break;
             case "readingTime":
                 if (!value.trim()) {
                     validation = false;
                     message = "Время чтения - обязательное поле";
+                } else if (!/^\d+$/.test(value.trim())) {
+                    validation = false;
+                    message = "Время чтения должно содержать только цифры";
                 }
                 break;
             case "tags":
