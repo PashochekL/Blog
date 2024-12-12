@@ -1,5 +1,5 @@
 import { showNotification } from "/js/noAuthorizeRep.js";
-import { checkAutorize } from "/js/communityDetails.js";
+import { navigate } from "/js/routing.js";
 
 const SubUnsub = async (id, token, path, endpoint) => {
     try {
@@ -33,7 +33,13 @@ const SubUnsub = async (id, token, path, endpoint) => {
                     const countSub = document.getElementById("countSub");
                     countSub.textContent = data.subscribersCount;
 
-                    checkAutorize();
+                    navigate(`/communities/${id}`);
+                    // if (path == "unsubscribe") {
+                    //     getInfCommunity(id, null);
+                    // } else if ("subscribe") {
+                    //     getInfCommunity(id, "Subscriber");
+                    // }
+                    // //getInfCommunity();
                 }
             } catch (error) {
                 console.log("Error:", error);
@@ -44,21 +50,21 @@ const SubUnsub = async (id, token, path, endpoint) => {
     }
 }
 
-export const handleButtonClick = async (communityId, button) => {
+export const handleButtonClick = async (communityId, button, countSub) => {
     const token = localStorage.getItem("token");
 
     if (token != null) {
         if (button.textContent == "Отписаться") {
-            await SubUnsub(communityId, token, "unsubscribe", "DELETE");
             button.textContent = "Подписаться";
             button.classList.remove("btn-danger");
             button.classList.add("btn-primary");
+            SubUnsub(communityId, token, "unsubscribe", "DELETE");
         }
         else {
-            await SubUnsub(communityId, token, "subscribe", "POST");
             button.textContent = "Отписаться";
             button.classList.add("btn-danger");
             button.classList.remove("btn-primary");
+            SubUnsub(communityId, token, "subscribe", "POST");
         }
     }
     else {

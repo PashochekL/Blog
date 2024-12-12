@@ -9,6 +9,7 @@ document.getElementById("logoutBtn").addEventListener("click", async (event) => 
     localStorage.removeItem("typeCommunity");
     localStorage.removeItem("communityName");
     localStorage.removeItem("communityId");
+    localStorage.removeItem("userId");
 
     document.getElementById("emailBtn").classList.add("d-none");
     document.getElementById("loginBtn").classList.remove("d-none");
@@ -75,6 +76,7 @@ const handleLocation = async () => {
         localStorage.removeItem("typeCommunity");
         localStorage.removeItem("communityName");
         localStorage.removeItem("communityId");
+        localStorage.removeItem("userId");
 
         document.getElementById("emailBtn").classList.add("d-none");
         document.getElementById("loginBtn").classList.remove("d-none");

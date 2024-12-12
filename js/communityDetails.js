@@ -63,6 +63,11 @@ const likeOnPost = async (url, requestMethod, data, heartImage) => {
             }
         );
 
+        if (response.status === 401) {
+            showNotification("Вы не авторизованы", "danger");
+            return;
+        }
+
         if (response.ok) {
             const countLikes = document.getElementById(`${data.id}`);
             if (requestMethod == "POST") {
@@ -102,6 +107,13 @@ const titleClick = (post) => {
     navigate(`/post/${post.id}`)
 };
 
+const handleChatClick = (postId) => {
+    console.log("Чат кликнут", postId);
+    localStorage.setItem("scrollToComments", "true");
+    localStorage.setItem("postId", postId);
+    navigate(`/post/${postId}`);
+}
+
 const handleTagClick = (tagElement, tagId) => {
     if (selectedTags.includes(tagId)) {
         selectedTags = selectedTags.filter(tag => tag !== tagId);
@@ -132,9 +144,10 @@ const showPostOnPage = async (post) => {
         heartImg.addEventListener("click", () => handleLikeClick(heartImg, post));
     }
 
-    const chatImg = postElement.querySelector("#chatImg");
+    postElement.querySelector(`.chatIcn`).id = `chatImg-${post.id}`;
+    const chatImg = postElement.querySelector(`#chatImg-${post.id}`);
     if (chatImg) {
-        chatImg.addEventListener("click", () => handleChatClick(post));
+        chatImg.addEventListener("click", () => handleChatClick(post.id));
     }
 
     if (post.hasLike && heartImg) {
@@ -147,7 +160,7 @@ const showPostOnPage = async (post) => {
     if (post.tags && post.tags.length > 0) {
         post.tags.forEach((tags) => {
             let hashtagElement = document.createElement("a");
-            hashtagElement.className = "text me-2 text-decoration-none";
+            hashtagElement.className = "text me-2 pe-3 text-decoration-none";
             hashtagElement.textContent = `#${tags.name}`;
             hashtagsContainer.appendChild(hashtagElement);
         });
@@ -347,7 +360,7 @@ const createAdmin = async (admin) => {
     return adminElement;
 };
 
-const getInfCommunity = async (communityId, role) => {
+export const getInfCommunity = async (communityId, role) => {
         try {
             const response = await fetch(
                 `https://blog.kreosoft.space/api/community/${communityId}`,
@@ -430,8 +443,9 @@ const showDetails = async () => {
 
     const buttonSub = document.getElementById("btnSub");
     const buttonCreate = document.getElementById("btnCreate");
+    const countSub = document.getElementById("countSub");
     buttonSub.addEventListener("click", () => {
-        handleButtonClick(communityId, buttonSub);
+        handleButtonClick(communityId, buttonSub, countSub);
         
     });
     // getInfCommunity(communityId);

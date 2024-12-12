@@ -66,6 +66,11 @@ const likeOnPost = async (url, requestMethod, data, heartImage) => {
                 }
             }
         );
+
+        if (response.status === 401) {
+            showNotification("Вы не авторизованы", "danger");
+            return;
+        }
     
         if (response.ok) {
             const countLikes = document.getElementById(`${data.id}`);
@@ -133,8 +138,11 @@ const handleLikeClick = (heartImage, data) => {
     }
 }
 
-const handleChatClick = (data) => {
-    console.log("Чат кликнут", data);
+const handleChatClick = (postId) => {
+    console.log("Чат кликнут", postId);
+    localStorage.setItem("scrollToComments", "true");
+    localStorage.setItem("postId", postId);
+    navigate(`/post/${postId}`);
 }
 
 const createPost = async (post) => {
@@ -160,9 +168,10 @@ const createPost = async (post) => {
         heartImg.addEventListener("click", () => handleLikeClick(heartImg, post));
     }
 
-    const chatImg = postElement.querySelector("#chatImg");
+    postElement.querySelector(`.chatIcn`).id = `chatImg-${post.id}`;
+    const chatImg = postElement.querySelector(`#chatImg-${post.id}`);
     if (chatImg) {
-        chatImg.addEventListener("click", () => handleChatClick(post));
+        chatImg.addEventListener("click", () => handleChatClick(post.id));
     }
 
     if (post.hasLike && heartImg) {
@@ -175,7 +184,7 @@ const createPost = async (post) => {
     if (post.tags && post.tags.length > 0) {
         post.tags.forEach((tags) => {
             let hashtagElement = document.createElement("a");
-            hashtagElement.className = "text me-2 text-decoration-none";
+            hashtagElement.className = "text me-1 pe-3 text-decoration-none";
             hashtagElement.textContent = `#${tags.name}`;
             hashtagsContainer.appendChild(hashtagElement);
         });

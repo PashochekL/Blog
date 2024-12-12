@@ -32,6 +32,8 @@ const getProfile = async () => {
 
             document.getElementById("emailBtn").textContent  = profileData.email;
             localStorage.setItem("userEmail", profileData.email);
+            localStorage.setItem("userId", profileData.id);
+            console.log(profileData.id)
         }
         else {
             const error = await response.json();

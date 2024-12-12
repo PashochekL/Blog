@@ -21,7 +21,7 @@
             </div>
             <div>
                 <div class="ms-3 pe-3 mb-1">
-                    <label for="descriptions" class="form-label description"></label>
+                    <label for="descriptions" class="form-label description" style="width: 100%; overflow-wrap: anywhere;"></label>
                 </div>
             </div>
             <div class="mx-3 mt-1">
@@ -65,7 +65,7 @@
                 <h5 class="p-3 mb-0">Комментарии</h5>
             </div>
             <div id="commentContainer">
-
+                
             </div>
         </div>
     </form>
@@ -78,7 +78,9 @@
             <div class="row mt-3 mb-3">
                 <div class="col-4"></div>
                 <div class="col-4">
-                    <div class="text-center mt-2 d-none" id="createCommentMessage"></div>
+                    <div class="text-center mt-2 d-none" id="createCommentMessage">
+
+                    </div>
                 </div>
                 <div class="col-4 text-end px-0">
                     <button class="btn btn-primary" type="button" id="btnCreate">Отправить</button>
@@ -89,13 +91,26 @@
 </div>
 
 <template id="comment-template">
-    <div class="row mb-1">
-        <label class="mx-3 form-label author mb-0">Author</label>
-        <h5 class="mx-3 pe-5 mt-2 form-label title" style="font-weight: normal;">CONTENT</h5>
+    <div class="row mb-1" id="commentId">
+        <div>
+            <label class="ms-3 form-label author mb-0"></label>
+            <i class="d-none bi bi-pencil pencil" style="cursor: pointer;"></i>
+            <i class="d-none bi bi-trash trash" style="cursor: pointer;"></i>
+        </div>
+        <h5 class="mx-3 pe-5 mt-2 form-label title" style="font-weight: normal; width: 100%; overflow-wrap: anywhere; height:fit-content"></h5>
+        <div class="d-none px-5 gap-4 d-flex descriptionContainer">
+            <input class="input" style="width: 100%;">
+            <button class="btn btn-primary btnCreate" type="button" style="width: fit-content; background-color: orange; border-color: orange;">Редактировать</button>
+        </div>
         <div class="ms-3">
             <label class="form-label date">createDate</label>
-            <a class="text-primary text-decoration-none" style="cursor: pointer;">Ответить</a>
+            <a class="text-primary text-decoration-none addAnswer" id="addAnswer-[ID]" style="cursor: pointer;">Ответить</a>
         </div>
-        <a class="d-none mx-3 mt-2 text-primary text-decoration-none form-label answer" style="cursor: pointer;">Расскрыть ответы</a>
+        <div class="d-none px-5 gap-4 d-flex addAnswerContainer">
+            <input class="inputNew" id="commentAddDescription" style="width: 100%;" placeholder="Оставьте комментарий">
+            <button class="btn btn-primary addAnswerBtn" type="button" style="width: fit-content;">Отправить</button>
+        </div>
+        <a class="mx-3 text-primary text-decoration-none form-label answer" id="answerBtn-[ID]" style="cursor: pointer; width: fit-content;">Расскрыть ответы</a>
+        <div id="subComments-[ID]" class="sub-comments ms-2"></div>
     </div>
 </template>

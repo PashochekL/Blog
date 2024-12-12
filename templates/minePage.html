@@ -99,23 +99,25 @@
 <template id="post-template">
     <form class="border-top border-start border-end mt-3">
         <div class="row">
-            <div>
-                <label class="form-label p-2 ps-3 pe-0 mt-2 author"></label>
+            <div class="ps-4 ms-1">
+                <label class="form-label pe-0 mt-2 author"></label>
                 <label class="form-label date"></label>
                 <label class="form-label"></label>
                 <label class="form-label community-name"></label>
             </div>
             <div>
-                <h4><label class="p-2 ps-3 title" style="cursor: pointer;"></label></h4>
+                <h4><label class="p-2 ps-3 title" style="width: 100%; overflow-wrap: anywhere; cursor: pointer;"></label></h4>
                 <hr class="mx-3">
             </div>
             <div>
                 <div class="ms-3 pe-3 mt-1 mb-1">
-                    <label for="descriptions" class="form-label description"></label>
+                    <label for="descriptions" class="form-label description" style="width: 100%; overflow-wrap: anywhere; overflow-y: hidden; height: 20px;"></label>
                 </div>
             </div>
             <div class="ms-3">
-                <div class="hashtags-container" id="hashtags-container"></div>
+                <div class="me-2 pe-4">
+                    <div class="hashtags-container me-4" id="hashtags-container" style="width: 100%; overflow-wrap: anywhere;"></div>
+                </div>
             </div>
             <div class="ms-3 mt-1">
                 <label for="readTime" class="form-label mt-1 reading-time"></label>
@@ -125,7 +127,7 @@
                     <div class="row">
                         <div class="col ms-3 ps-2">
                             <i class="comments-count ms-1"></i>
-                            <i class="bi bi-chat-left-text" id="chatImg"></i>
+                            <i class="bi bi-chat-left-text chatIcn" id="chatImg-[ID]" style="cursor: pointer;"></i>
                         </div>
                         <div class="col"></div>
                         <div class="col">
