@@ -237,7 +237,6 @@ const updatePage = async (newPage) => {
     if (pathParts.length === 3 && pathParts[1] === "communities") {
         communityId = pathParts[2];
     }
-    
     const params = new URLSearchParams(window.location.search);
     params.set("page", newPage);
     const baseURL = urlPath(`http://localhost:5173/communities/${communityId}`, params);
